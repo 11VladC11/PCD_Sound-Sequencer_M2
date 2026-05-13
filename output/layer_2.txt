@@ -1,0 +1,6 @@
+layer_index: 2
+instrument: violin
+input_file: Sounds/violin-wav/violin_A3_025_mezzo-forte_arco-normal.wav
+notes: A3-mezzo
+effect: chorus:light
+processed_by: vboxuser

@@ -1,0 +1,6 @@
+layer_index: 4
+instrument: cello
+input_file: Sounds/cello-wav/cello_A2_025_mezzo-piano_arco-normal.wav
+notes: A2-mezzo
+effect: delay:80
+processed_by: vboxuser

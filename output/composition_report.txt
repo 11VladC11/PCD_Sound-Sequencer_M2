@@ -1,0 +1,9 @@
+title: sound_sequencer
+composition: demo_string_layers
+sample_rate: 44100
+audio_output: output/demo_string_layers.wav
+layers:
+  - 1: violin / reverb:light / Sounds/violin-wav/violin_A3_025_forte_arco-normal.wav
+  - 2: violin / chorus:light / Sounds/violin-wav/violin_A3_025_mezzo-forte_arco-normal.wav
+  - 3: cello / lowpass / Sounds/cello-wav/cello_A2_025_forte_arco-normal.wav
+  - 4: cello / delay:80 / Sounds/cello-wav/cello_A2_025_mezzo-piano_arco-normal.wav

@@ -1,0 +1,204 @@
+openapi: 3.0.3
+info:
+  title: Sound Sequencer API
+  version: v1
+  description: |
+     contractul operatiilor curente planificate
+servers:
+  - url: http://127.0.0.1:19091
+paths:
+  /compositions/upload:
+    post:
+      summary: initializeaza upload-ul unei compozitii
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/upload_request'
+      responses:
+        '202':
+          description: cererea a fost acceptata si introdusa in fluxul de procesare
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ack_response'
+        '400':
+          description: date de intrare invalide
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
+  /compositions/{job_id}/chunks:
+    post:
+      summary: trimite o bucata din compozitie
+      parameters:
+        - $ref: '#/components/parameters/job_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/chunk_request'
+      responses:
+        '202':
+          description: bucata a fost acceptata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ack_response'
+        '400':
+          description: chunk invalid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+        '404':
+          description: job inexistent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
+  /compositions/{job_id}/status:
+    get:
+      summary: intoarce starea procesarii
+      parameters:
+        - $ref: '#/components/parameters/job_id'
+      responses:
+        '200':
+          description: starea curenta a procesarii
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/status_response'
+        '404':
+          description: job inexistent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
+  /compositions/{job_id}/result:
+    get:
+      summary: intoarce locatia rezultatului final
+      parameters:
+        - $ref: '#/components/parameters/job_id'
+      responses:
+        '200':
+          description: rezultatul este disponibil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/result_response'
+        '202':
+          description: rezultatul nu este inca pregatit
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/status_response'
+        '404':
+          description: job inexistent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error_response'
+
+components:
+  parameters:
+    job_id:
+      name: job_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: identificatorul unic al jobului
+
+  schemas:
+    upload_request:
+      type: object
+      required:
+        - composition_name
+        - total_bytes
+        - sample_rate
+      properties:
+        composition_name:
+          type: string
+        total_bytes:
+          type: integer
+          minimum: 1
+        sample_rate:
+          type: integer
+
+    ack_response:
+      type: object
+      required:
+        - job_id
+        - status
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+        message:
+          type: string
+        chunk_index:
+          type: integer
+
+    chunk_request:
+      type: object
+      required:
+        - chunk_index
+        - chunk_bytes
+        - payload_base64
+      properties:
+        chunk_index:
+          type: integer
+          minimum: 0
+        chunk_bytes:
+          type: integer
+          minimum: 1
+        payload_base64:
+          type: string
+
+    status_response:
+      type: object
+      required:
+        - job_id
+        - status
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+          enum: [queued, processing, finished]
+        processed_layers:
+          type: integer
+          minimum: 0
+        total_layers:
+          type: integer
+          minimum: 1
+
+    result_response:
+      type: object
+      required:
+        - job_id
+        - status
+      properties:
+        job_id:
+          type: string
+        status:
+          type: string
+        result_path:
+          type: string
+        composition_name:
+          type: string
+
+    error_response:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string

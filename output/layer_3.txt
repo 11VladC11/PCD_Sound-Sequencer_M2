@@ -1,0 +1,6 @@
+layer_index: 3
+instrument: cello
+input_file: Sounds/cello-wav/cello_A2_025_forte_arco-normal.wav
+notes: A2
+effect: lowpass
+processed_by: vboxuser
